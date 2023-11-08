@@ -2,6 +2,7 @@ package com.chandilove.appchl.infra.handlers;
 
 import com.chandilove.appchl.infra.exceptions.ImageSizeException;
 import com.chandilove.appchl.infra.exceptions.ObjectValidationException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +49,14 @@ public class GlobalExceptionHandler {
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
             .contentType(MediaType.APPLICATION_JSON)
             .body(errores);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ExceptionRepresentation> handleException(EntityNotFoundException e){
+        ExceptionRepresentation representation = ExceptionRepresentation.builder()
+                .errorMessage(e.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(representation);
     }
 
 }

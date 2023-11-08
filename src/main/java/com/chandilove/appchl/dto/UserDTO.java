@@ -36,7 +36,7 @@ public class UserDTO {
     private String telefono;
 
     @Setter
-    private Blob fotoPerfil;
+    private byte[] fotoPerfil;
 
     @NotBlank(message = "Ingrese una ciudad")
     private String ciudad;

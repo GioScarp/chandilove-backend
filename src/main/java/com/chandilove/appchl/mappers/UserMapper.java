@@ -66,4 +66,15 @@ public class UserMapper {
                 .gender(userPersonDTO.getGender())
                 .build();
     }
+
+    public static UserPersonDTO toPersonResponse(Person person){
+        return UserPersonDTO.builder()
+                .nombre(person.getNombre())
+                .apellido(person.getApellido())
+                .biografia(person.getUser().getBiografia())
+                .nombreUsuario(person.getUser().getNombreUsuario())
+                .fotoPerfil(person.getUser().getFotoPerfil())
+                .telefono(person.getUser().getTelefono())
+                .build();
+    }
 }

@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.sql.Blob;
+import java.util.List;
 
 @Entity
 @Getter
@@ -31,7 +32,7 @@ public class User extends AbstractEntity{
 
     @Lob
     @Column(name = "Foto_perfil")
-    private Blob fotoPerfil;
+    private byte[] fotoPerfil;
 
     @Column(nullable = false)
     private String ciudad;
@@ -43,4 +44,7 @@ public class User extends AbstractEntity{
     @OneToOne
     @JoinColumn(name = "tipo_user_id", referencedColumnName = "id")
     private TypeUser typeUser;
+
+    @OneToMany(mappedBy = "user")
+    private List<Publicaciones> publicaciones;
 }

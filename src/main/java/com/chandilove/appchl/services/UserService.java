@@ -21,4 +21,6 @@ public interface UserService extends AbstractService<UserDTO>{
 
     UserDTO loginUser(UserLogin user) throws ObjectValidationException;
 
+    UserPersonDTO buscarPersona(Long id);
+
 }

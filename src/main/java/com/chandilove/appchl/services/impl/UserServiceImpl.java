@@ -8,6 +8,7 @@ import com.chandilove.appchl.infra.exceptions.ImageSizeException;
 import com.chandilove.appchl.infra.exceptions.ObjectValidationException;
 import com.chandilove.appchl.infra.validator.ObjectsValidator;
 import com.chandilove.appchl.mappers.UserMapper;
+import com.chandilove.appchl.models.Person;
 import com.chandilove.appchl.models.User;
 import com.chandilove.appchl.repositories.FoundationRepository;
 import com.chandilove.appchl.repositories.PersonRepository;
@@ -34,6 +35,15 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     private FoundationRepository foundationRepository;
     private PersonRepository personRepository;
+
+
+    @Override
+    public UserPersonDTO buscarPersona(Long id){
+
+        Person person = personRepository.findById(id).orElseThrow();
+
+        return UserMapper.toPersonResponse(person);
+    }
 
     @Override
     public Long save(UserDTO dto) {
@@ -63,9 +73,8 @@ public class UserServiceImpl implements UserService {
             throw new ImageSizeException(file.getOriginalFilename());
         }
         if (!file.isEmpty()){
-            byte[] bytes = file.getBytes();
-            Blob blob = new javax.sql.rowset.serial.SerialBlob(bytes);
-            usuario.setFotoPerfil(blob);
+
+            usuario.setFotoPerfil(file.getBytes());
         }
 
         User newUser = userRepository.save(UserMapper.toUserEntity(usuario));
@@ -78,13 +87,10 @@ public class UserServiceImpl implements UserService {
     public Long saveUsuarioPerson(UserPersonDTO usuario, MultipartFile file) throws ObjectValidationException, ImageSizeException, IOException, SQLException {
         validatorPerson.validate(usuario);
         if(file.getSize() > 2*1024*1024){
-            System.out.println("grande");
             throw new ImageSizeException(file.getOriginalFilename());
         }
         if (!file.isEmpty()){
-            byte[] bytes = file.getBytes();
-            Blob blob = new javax.sql.rowset.serial.SerialBlob(bytes);
-            usuario.setFotoPerfil(blob);
+            usuario.setFotoPerfil(file.getBytes());
         }
 
         User newUser = userRepository.save(UserMapper.toUserEntity(usuario));
@@ -106,6 +112,7 @@ public class UserServiceImpl implements UserService {
                     .nombreUsuario(usuario.getNombreUsuario())
                     .email(usuario.getEmail())
                     .id(usuario.getId())
+                    .fotoPerfil(usuario.getFotoPerfil())
                     .build();
         }
 

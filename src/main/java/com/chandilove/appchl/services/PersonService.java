@@ -1,5 +1,7 @@
 package com.chandilove.appchl.services;
 
-public interface PersonService extends AbstractService{
+import com.chandilove.appchl.dto.UserPersonDTO;
+
+public interface PersonService extends AbstractService<UserPersonDTO>{
 
 }
