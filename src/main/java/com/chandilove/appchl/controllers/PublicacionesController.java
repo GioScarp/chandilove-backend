@@ -8,6 +8,9 @@ import com.chandilove.appchl.infra.exceptions.ObjectValidationException;
 import com.chandilove.appchl.mappers.PublicacionMapper;
 import com.chandilove.appchl.services.PublicacionesService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +42,7 @@ public class PublicacionesController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> obtenerPublicacion(@PathVariable Long id) throws SQLException, IOException {
+    public ResponseEntity<?> obtenerPublicacion(@PathVariable Long id) {
 
         PublicacionDTO publicacion = publicacioneService.findById(id);
 
@@ -50,15 +53,16 @@ public class PublicacionesController {
                         .build());
     }
 
-//    @GetMapping("/imagen/{id}")
-//    public ResponseEntity<?> obtenerImagenPublicacion(@PathVariable Long id) throws SQLException, IOException {
-//
-//        PublicacionDTO publicacion = publicacioneService.findById(id);
-//        return ResponseEntity.status(HttpStatus.OK)
-//                .contentType(MediaType.IMAGE_PNG)
-//                .body(readBlob(publicacion.getImagen()));
-//    }
+    @GetMapping
+    public ResponseEntity<Page<PublicacionDTO>> obtenerPublicaciones(@PageableDefault(size = 15) Pageable pageable){
+        return ResponseEntity.ok(publicacioneService.findAll(pageable));
+    }
 
+    @GetMapping("/usuario/{id}")
+    public ResponseEntity<Page<PublicacionDTO>> obtenerPublicacionesByUsuario(
+            @PageableDefault(size = 15) Pageable pageable, @PathVariable Long id){
+        return ResponseEntity.ok(publicacioneService.findByUsuario(pageable, id));
+    }
 
 
     // Método para leer los bytes desde un Blob.

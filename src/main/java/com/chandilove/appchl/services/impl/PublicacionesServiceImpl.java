@@ -8,6 +8,7 @@ import com.chandilove.appchl.mappers.PublicacionMapper;
 import com.chandilove.appchl.models.Publicaciones;
 import com.chandilove.appchl.repositories.PublicacionesRepository;
 import com.chandilove.appchl.services.PublicacionesService;
+import com.chandilove.appchl.services.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,7 @@ import java.sql.SQLException;
 public class PublicacionesServiceImpl implements PublicacionesService {
 
     private final PublicacionesRepository publicacionesRepository;
+    private final UserService userService;
     private final ObjectsValidator<PublicacionDTO> validator;
 
 
@@ -33,8 +35,9 @@ public class PublicacionesServiceImpl implements PublicacionesService {
     }
 
     @Override
-    public Page findAll(Pageable pageable) {
-        return null;
+    public Page<PublicacionDTO> findAll(Pageable pageable) {
+        return publicacionesRepository.findByIdNotNull(pageable)
+                .map(PublicacionMapper::toPublicacionResponse);
     }
 
     @Override
@@ -63,5 +66,14 @@ public class PublicacionesServiceImpl implements PublicacionesService {
         Publicaciones newPublicacion = publicacionesRepository.save(PublicacionMapper.toEntity(publicacion));
         return publicacionesRepository
                 .save(newPublicacion).getId();
+    }
+
+    @Override
+    public Page<PublicacionDTO> findByUsuario(Pageable pageable, Long id) {
+        userService.findById(id);
+        return publicacionesRepository.findByUser_Id(pageable, id)
+                .map(publicacion -> PublicacionDTO.builder()
+                        .imagen(publicacion.getImagenPublicacion())
+                        .build());
     }
 }

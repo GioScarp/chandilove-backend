@@ -14,6 +14,7 @@ import com.chandilove.appchl.repositories.FoundationRepository;
 import com.chandilove.appchl.repositories.PersonRepository;
 import com.chandilove.appchl.repositories.UserRepository;
 import com.chandilove.appchl.services.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -56,8 +57,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserFundationDTO findById(Long id) {
-        return null;
+    public UserDTO findById(Long id) {
+        return UserMapper.toLightUserResponse(userRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("usuario no encontrado"))
+        );
     }
 
     @Override
